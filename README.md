@@ -12,7 +12,7 @@ Use the [MediumEditor (15.5.x)] wysiwyg in your Angular2 application.
 
 ```javascript
 import {Component} from 'angular2/core';
-import {MediumContentEditor} from 'ng2-medium-editor';';
+import {MediumContentEditor} from 'ng2-medium-editor';
 
 @Component({
   selector: 'sample',
