@@ -19,8 +19,7 @@ import {NgControl, ControlValueAccessor} from 'angular2/common';
  */
 @Component({
     selector: 'meditor.editable',
-    template: `<textarea #host></textarea>
-    <button (click)="hackUpdate($event)" #button></button>`
+    template: `<textarea #host></textarea>`
 })
 @Reflect.metadata('parameters', [null, [new OptionalMetadata()]])
 export class MediumContentEditor {
@@ -30,15 +29,12 @@ export class MediumContentEditor {
 
     @Output() change = new EventEmitter();
     @ViewChild('host') host;
-    @ViewChild('button') button;
 
     value = '';
     instance = null;
     ngControl;
 	elementRef;
 
-    // Hack button
-    _buttonEl;
 
     /**
      * Constructor
@@ -93,9 +89,6 @@ export class MediumContentEditor {
 
 	this.editor = new MediumEditor(this.host._appElement.nativeElement, config);
 
-        // Hide hack button
-        this._buttonEl = this.button._appElement.nativeElement;
-        this._buttonEl.style.display = 'none';
 
 	        // Change event
 	let editable =  this.editor.elements[0];
@@ -107,8 +100,6 @@ export class MediumContentEditor {
 			    this.change.emit( value );
 			    this.ngControl.viewToModelUpdate(value);
 
-			    // Hack
-			    //this._buttonEl.dispatchEvent(new Event('click'))
             });
 
 
@@ -133,9 +124,15 @@ export class MediumContentEditor {
         this.value = value;
 	
         if( this.editor ){
-		this.editor.elements[0].nextSibling.value=value;
-           	this.editor.elements[0].innerHTML=(value);
-		this.editor.elements[0].setAttribute("data-placeholder","");
+		if(value && value != ""){
+			this.editor.elements[0].nextSibling.value=value;
+		   	this.editor.elements[0].innerHTML=(value);
+			this.editor.elements[0].setAttribute("data-placeholder","");
+		}else{
+			this.editor.elements[0].nextSibling.value=null;
+		   	this.editor.elements[0].innerHTML="";
+			this.editor.elements[0].setAttribute("data-placeholder","");
+		}
 	}
     }
     onChange(_){}

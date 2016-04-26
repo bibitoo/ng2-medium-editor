@@ -1,24 +1,23 @@
-# Angular2 - CKEditor component
+# Angular2 - MediumEditor component
 
-Use the [CKEditor (4.x)](http://ckeditor.com/) wysiwyg in your Angular2 application.
+Use the [MediumEditor (15.5.x)] wysiwyg in your Angular2 application.
 
 ### <a name="install"></a>Installation
 
-- Include CKEditor javascript files in your application
-- Install ng2-ckeditor
-  - JSPM : ```jspm install ng2-ckeditor=github:chymz/ng2-ckeditor```
-  - NPM : ```npm install ng2-ckeditor```
+- Include MediumEditor javascript files in your application
+- Install ng2-mediumeditor
+  - NPM : ```npm install ng2-medium-editor```
 
 ### <a name="sample"></a>Sample (ES6)
 
 ```javascript
 import {Component} from 'angular2/core';
-import {CKEditor} from 'ng2-ckeditor';
+import {MediumContentEditor} from 'ng2-medium-editor';';
 
 @Component({
   selector: 'sample',
-  directives: [CKEditor],
-  template: `<ckeditor [(ngModel)]="ckeditorContent" [config]="{uiColor: '#99000'}"></ckeditor>`
+  directives: [MediumContentEditor],
+  template: `<meditor  [(ngModel)]="data.content"  class="editable"  #content="ngForm"  ngControl="content"></meditor>`
 })
 export class Sample{
   constructor(){
@@ -27,12 +26,4 @@ export class Sample{
 }
 ```
 
-### <a name="config"></a>Configuration
 
-* config : The configuration object for CKEditor see http://docs.ckeditor.com/#!/api/CKEDITOR.config-cfg-fileTools_defaultFileName
-* configFile : You can use a javacsript file to configure your CKEditor (Only work with SystemJS)
-```javascript
-export var config = {
-    uiColor: '#990000'
-}
-```
