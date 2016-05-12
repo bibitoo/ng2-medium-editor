@@ -1,5 +1,5 @@
 {
-  "name": "ng2-mediumeditor",
+  "name": "ng2-medium-editor",
   "version": "1.0.0",
   "description": "Angular2 MediumContentEditor component",
   "main": "lib/MediumContentEditor.js",

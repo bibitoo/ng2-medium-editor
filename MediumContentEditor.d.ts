@@ -6,7 +6,7 @@ import {
 import {NgControl, ControlValueAccessor} from 'angular2/common';
 
 /**
- * CKEditor component
+ * MediumEditor component
  */
 export declare class MediumContentEditor implements ControlValueAccessor {
 
@@ -15,7 +15,7 @@ export declare class MediumContentEditor implements ControlValueAccessor {
     change:EventEmitter;
 
     constructor(elementRef:ElementRef, ngControl:NgControl);
-    ckeditorInit(config:any):void;
+    editorInit(config:any):void;
     hackUpdate():void;
 
     // ControlValueAccessor

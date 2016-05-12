@@ -13,7 +13,7 @@ import {
 import {NgControl, ControlValueAccessor} from 'angular2/common';
 
 /**
- * CKEditor component
+ * MediumEditor component
  * Usage :
  * <textarea [(ngModel)]="data" [config]="{...}" configFile="file.js"></textarea>
  */

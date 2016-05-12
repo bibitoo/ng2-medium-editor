@@ -21,7 +21,7 @@ import {MediumContentEditor} from 'ng2-medium-editor';
 })
 export class Sample{
   constructor(){
-    this.ckeditorContent = `<p>My HTML</p>`;
+    this.editorContent = `<p>My HTML</p>`;
   }
 }
 ```
