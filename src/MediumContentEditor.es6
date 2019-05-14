@@ -4,7 +4,7 @@ import * as MediumEditor from 'medium-editor';
 /**
 * MediumEditor component
 * Usage :
-* <div [(ngModel)]="data" [config]="{...}" ></div>
+* <medium-editor [(html)]="data" [config]="{...}" ></medium-editor>
 */
 @Component({
   selector: 'medium-editor',
