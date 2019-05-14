@@ -1,142 +1,91 @@
-// Imports
-import {
-    Component,
-    Directive,
-    Input,
-    Output,
-    ElementRef,
-    ViewChild,
-    Optional,
-    OptionalMetadata,
-    EventEmitter
-} from 'angular2/core';
-import {NgControl, ControlValueAccessor} from 'angular2/common';
+import { Component, Input, Output, ViewChild, EventEmitter, ElementRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import * as MediumEditor from 'medium-editor';
 
 /**
- * MediumEditor component
- * Usage :
- * <textarea [(ngModel)]="data" [config]="{...}" configFile="file.js"></textarea>
- */
+* MediumEditor component
+* Usage :
+* <medium-editor [(html)]="data" [config]="{...}" ></medium-editor>
+*/
 @Component({
-    selector: 'meditor.editable',
-    template: `<textarea #host></textarea>`
+  selector: 'medium-editor',
+  template: `<div #host></div>`,
+  styleUrls: [
+    './medium-editor.component.less',
+  ]
 })
-@Reflect.metadata('parameters', [null, [new OptionalMetadata()]])
-export class MediumContentEditor {
+export class MediumContentEditor implements OnInit, OnChanges {
+  @Input() config : any;
+  @Output() change: EventEmitter<any> = new EventEmitter();
+  @ViewChild('host') host : any;
 
-    @Input() config;
-    @Input() configFile;
+  @Input() html: string = '';
+  @Output() htmlChange: EventEmitter<string> = new EventEmitter();
 
-    @Output() change = new EventEmitter();
-    @ViewChild('host') host;
-
-    value = '';
-    instance = null;
-    ngControl;
-	elementRef;
+  private value: string = '';
+  private instance: any = null;
+  private editor: any;
 
 
-    /**
-     * Constructor
-     */
-    constructor(elementRef:ElementRef, ngControl:NgControl){
-        if( ngControl ){
-            ngControl.valueAccessor = this;
-            this.ngControl = ngControl;
-        }
-	this.elementRef = elementRef;
+  /**
+   * Constructor
+   */
+  constructor(elementRef:ElementRef,
+    ) {
+  }
+
+  /**
+   * On component destroy
+   */
+  ngOnDestroy(): void {
+    if( this.editor ) {
+      this.instance.removeAllListeners();
+      this.editor.destroy();
+      this.editor = null;
     }
+  }
 
-    /**
-     * On component destroy
-     */
-    ngOnDestroy(){
-        if( this.editor ) {
-            this.instance.removeAllListeners();
-            this.editor.destroy();
-            this.editor = null;
-        }
+  /**
+   * On component view init
+   */
+  ngAfterViewInit() : void {
+    this.editorInit( this.config );
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.html && this.editor && this.editor.elements && this.editor.elements[0] && this.editor.elements[0].innerHTML !== changes.html.currentValue) {
+      this.editor.elements[0].innerHTML = changes.html.currentValue;
     }
+  }
 
-    /**
-     * On component view init
-     */
-    ngAfterViewInit(){
-        // Configuration
-        var config = {};
+  /**
+   * Editor init
+   */
+  editorInit( config: any ) : void {
 
-        // Fetch file
-        if( this.configFile ){
+    this.editor = new MediumEditor(this.host.nativeElement, config);
 
-            if( System && System.import ){
-                System.import(this.configFile)
-                    .then((res) => {
-                        this.editorInit( res.config );
-                    })
-            }
-
-        // Config object
-        }else{
-            config = this.config || {};
-            this.editorInit( config );
-        }
+    if(this.html) {
+      this.editor.elements[0].innerHTML = this.html;
     }
+    this.editor.subscribe('editableInput',  (event, editable)=> {
+      let value = this.editor.elements[0].innerHTML;
+      this.htmlChange.emit( value );
 
-    /**
-     * Editor init
-     */
-    editorInit( config ){
-
-	this.editor = new MediumEditor(this.host._appElement.nativeElement, config);
+    });
 
 
-	        // Change event
-	let editable =  this.editor.elements[0];
-            this.editor.subscribe('editableInput',  (event, editable)=> {
-                          let value =this.editor.elements[0].innerHTML;
+  }
 
-			    // This doesn't work ???
-			    this.onChange( value );
-			    this.change.emit( value );
-			    this.ngControl.viewToModelUpdate(value);
-
-            });
-
-
-    }
-
-    /**
-     * Hack to update model
-     */
-    hackUpdate(){
-        if( this.editor ){
-            var value = this.vlaue;
-            this.ngControl.viewToModelUpdate(value);
-            //this.onChange( value );
-            this.change.emit( value );
-        }
-    }
-
-    /**
-     * Implements ControlValueAccessor
-     */
-    writeValue(value){
-        this.value = value;
-	
-        if( this.editor ){
-		if(value && value != ""){
-			this.editor.elements[0].nextSibling.value=value;
-		   	this.editor.elements[0].innerHTML=(value);
-			this.editor.elements[0].setAttribute("data-placeholder","");
-		}else{
-			this.editor.elements[0].nextSibling.value=null;
-		   	this.editor.elements[0].innerHTML="";
-			this.editor.elements[0].setAttribute("data-placeholder","");
-		}
-	}
-    }
-    onChange(_){}
-    onTouched(){}
-    registerOnChange(fn){this.onChange = fn;}
-    registerOnTouched(fn){this.onTouched = fn;}
+  onChange() : void {}
+  onTouched() : void {}
+  registerOnChange (fn: any) : void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any )  : void {
+    this.onTouched = fn;
+  }
 }
